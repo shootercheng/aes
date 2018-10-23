@@ -112,19 +112,51 @@ public class AesUtil {
          }
     }
 
+    public static void encryFileBydir(String sourcedir, String key, String encryOutPath) throws Exception{
+        List<String> filelist = new ArrayList<String>();
+        FileUtil.getFilePath(sourcedir, filelist);
+        for(String filepath : filelist){
+            //读取源文件，加密成Byte[] 数组
+            String filecontent = FileUtil.readFileAll(filepath, UTF8ENCODE);
+            byte[] aesByteArray = aesEncrypt(filecontent, key);
+            filepath = filepath.substring(sourcedir.length());
+            String outpath = encryOutPath + filepath;
+            FileUtil.createNewDirFile(outpath);
+            FileUtil.writeByteArraytoFile(outpath, aesByteArray, false);
+        }
+    }
+
+    public static void decryFileByoutdir(String encryOutPath, String key, String decryOutPath) throws Exception{
+        List<String> ecryfilelist = new ArrayList<String>();
+        FileUtil.getFilePath(encryOutPath, ecryfilelist);
+        for(String filepath : ecryfilelist){
+            //解密
+            byte[] encryArray = FileUtil.readByteArrayByfpath(filepath);
+            String decryptcontent = aesDecrypt(encryArray, key);
+            filepath = filepath.substring(encryOutPath.length());
+            String outpath = decryOutPath + filepath;
+            FileUtil.createNewDirFile(outpath);
+            FileUtil.writeStrtoFile(outpath, decryptcontent, false);
+        }
+    }
+
 
 
     public static void main(String[] args) throws Exception {
         String userdir = System.getProperty("user.dir");
         String encrypth = userdir + File.separator + "encry"+ File.separator +"encrypath.txt";
-        String key = "中@文&秘*钥s";
-        File file = new File(encrypth);
-        if(!file.exists()){
-            throw new RuntimeException("----file not exists----" + encrypth);
-        }
+        //注意 中文密钥受JDK版本影响，也不知道为啥？？
+        String key = "中@文#密*钥s";
+//        File file = new File(encrypth);
+//        if(!file.exists()){
+//            throw new RuntimeException("----file not exists----" + encrypth);
+//        }
         String encryOutPath = "C:/Users/chengdu/Desktop/encryptout/";
         String decryptPath = "C:/Users/chengdu/Desktop/decryptout/";
-        decryPtFile(encryOutPath, decryptPath, key);
-
+//        //decryPtFile(encryOutPath, decryptPath, key);
+//        encryPtByfilePath(encrypth, key, encryOutPath, originPath);
+          String dir = "E:/Java/Blog/";
+//          encryFileBydir(dir, key, encryOutPath);
+        decryFileByoutdir(encryOutPath, key,decryptPath);
     }
 }

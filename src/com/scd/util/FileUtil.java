@@ -5,6 +5,7 @@ import com.scd.aes.AesUtil;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * @author chengdu
@@ -12,6 +13,8 @@ import java.util.List;
 public class FileUtil {
 
     public static final int BUFFSIZE = 1024;
+
+    private static final Logger log = Logger.getLogger("lavasoft");
 
     /**
      * 一次读取整个文件
@@ -171,6 +174,39 @@ public class FileUtil {
         }else{
             //传入文件时添加一条
             pathlist.add(filepath);
+        }
+    }
+
+    public static void createNewDirFile(String filepath) throws IOException{
+        filepath = filepath.replace("\\","/");
+        int endIndex = filepath.lastIndexOf("/");
+        String dirpath = filepath.substring(0,endIndex);
+        //创建文件目录
+        File dirFile = new File(dirpath);
+        if(!dirFile.exists()) {
+            if (dirFile.mkdirs()) {
+                log.info("create file dir successfully----" + dirpath);
+            }
+        }else{
+            log.info("dir path exists----"+dirpath);
+        }
+        //创建文件
+        File file = new File(filepath);
+        if(!file.exists()) {
+            if (file.createNewFile()) {
+                log.info("create file successfully----" + filepath);
+            }
+        }else {
+            log.info("file path exists----"+filepath);
+        }
+    }
+
+    public static void main(String[] args){
+        String filepath = "E:/Java/Blog/";
+        List<String> filelists = new ArrayList<String>();
+        getFilePath(filepath, filelists);
+        for(String path : filelists){
+            System.out.println(path);
         }
     }
 }
