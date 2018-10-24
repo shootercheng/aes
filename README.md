@@ -3,6 +3,8 @@ aes 加密解密
 
 ### 中文秘钥JDK
 
+使用中文秘钥时候汉字的key字节大小与什么机器相关么???
+
 ```
 C:\Program Files\Java\jdk1.7.0_17\bin>java -version
 java version "1.7.0_17"
