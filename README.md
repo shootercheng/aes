@@ -30,3 +30,8 @@ Java(TM) SE Runtime Environment (build 1.8.0_77-b03)
 Java HotSpot(TM) 64-Bit Server VM (build 25.77-b03, mixed mode)
 String key = "中文啊XX";
 ```
+
+dependcy
+------------------
+bcprov-jdk15on-1.60.jar
+commons-codec-1.11.jar
