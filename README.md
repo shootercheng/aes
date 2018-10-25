@@ -34,4 +34,5 @@ String key = "中文啊XX";
 dependcy
 ------------------
 bcprov-jdk15on-1.60.jar
+
 commons-codec-1.11.jar
