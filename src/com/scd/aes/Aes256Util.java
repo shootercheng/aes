@@ -21,29 +21,29 @@ public class Aes256Util {
 
     private static final String ALGORITHM_PKCS5Padding = "AES/ECB/PKCS5Padding";
 
-    public static byte[] Aes256Encode(String str, byte[] key){
+    public static byte[] Aes256Encode(String str, String key){
         initialize();
         byte[] result = null;
         try{
             Cipher cipher = Cipher.getInstance(ALGORITHM_PKCS7Padding, "BC");
-            SecretKeySpec keySpec = new SecretKeySpec(key, "AES"); //生成加密解密需要的Key
+            SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(UTF8ENCODE), "AES"); //生成加密解密需要的Key
             cipher.init(Cipher.ENCRYPT_MODE, keySpec);
-            result = cipher.doFinal(str.getBytes("UTF-8"));
+            result = cipher.doFinal(str.getBytes(UTF8ENCODE));
         }catch(Exception e){
             e.printStackTrace();
         }
         return result;
     }
 
-    public static String Aes256Decode(byte[] bytes, byte[] key){
+    public static String Aes256Decode(byte[] bytes, String key){
         initialize();
         String result = null;
         try{
             Cipher cipher = Cipher.getInstance(ALGORITHM_PKCS7Padding, "BC");
-            SecretKeySpec keySpec = new SecretKeySpec(key, "AES"); //生成加密解密需要的Key
+            SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(UTF8ENCODE), "AES"); //生成加密解密需要的Key
             cipher.init(Cipher.DECRYPT_MODE, keySpec);
             byte[] decoded = cipher.doFinal(bytes);
-            result = new String(decoded, "UTF-8");
+            result = new String(decoded, UTF8ENCODE);
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -86,6 +86,10 @@ public class Aes256Util {
         byte[] encrptyArr = aes256EncrptyDefault("成都", key);
         System.out.println(encrptyArr);
         String originStr = aes256dcrptyDefault(encrptyArr, key);
-        System.out.println("-------解密串为-----"+originStr);
+        System.out.println(originStr);
+        byte[] pkcs7Attr = Aes256Encode("成都",key);
+        System.out.println(pkcs7Attr);
+        String orginstr7 = Aes256Decode(pkcs7Attr, key);
+        System.out.println(orginstr7);
     }
 }

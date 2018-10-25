@@ -146,7 +146,7 @@ public class AesUtil {
         String userdir = System.getProperty("user.dir");
         String encrypth = userdir + File.separator + "encry"+ File.separator +"encrypath.txt";
         //注意 中文密钥受JDK版本影响，也不知道为啥？？
-        String key = "中@文#密*钥s";
+        String key = "中文啊XX";
 //        File file = new File(encrypth);
 //        if(!file.exists()){
 //            throw new RuntimeException("----file not exists----" + encrypth);
@@ -156,7 +156,7 @@ public class AesUtil {
 //        //decryPtFile(encryOutPath, decryptPath, key);
 //        encryPtByfilePath(encrypth, key, encryOutPath, originPath);
           String dir = "E:/Java/Blog/";
-//          encryFileBydir(dir, key, encryOutPath);
-        decryFileByoutdir(encryOutPath, key,decryptPath);
+          encryFileBydir(dir, key, encryOutPath);
+//        decryFileByoutdir(encryOutPath, key,decryptPath);
     }
 }
