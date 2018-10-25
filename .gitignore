@@ -1,4 +1,7 @@
 .git
 .idea
 out
+lib
+sourcefile
+test
 
