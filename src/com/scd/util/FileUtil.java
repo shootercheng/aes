@@ -200,6 +200,49 @@ public class FileUtil {
             log.info("file path exists----"+filepath);
         }
     }
+    
+    	/**
+	 * 删除文件
+	 * @param filepath
+	 */
+	public static void deleteFile(String filepath){
+		File file = new File(filepath);
+		if(file.exists()){
+			if(file.isDirectory()){
+				System.out.println("enter dir " + file.getPath());
+				File[] files = file.listFiles();
+				for(File f : files){
+					deleteFile(f.getAbsolutePath());
+				}
+			}else if(file.isFile()){
+				System.out.println("delete file :"+ file.getAbsolutePath());
+				file.delete();
+			}
+		}
+	}
+	
+	/**
+	 * 删除文件以及文件夹
+	 * @param filepath
+	 */
+	public static void deleteDirAndFile(String filepath){
+		File file = new File(filepath);
+		if(file.exists()){
+			if(file.isDirectory()){
+				System.out.println("enter dir " + file.getPath());
+				File[] files = file.listFiles();
+				for(File f : files){
+					deleteDirAndFile(f.getAbsolutePath());
+				}
+				if(file.delete()){
+					System.out.println("delete dir " + file.getAbsolutePath());
+				}
+			}else if(file.isFile()){
+				System.out.println("delete file :"+ file.getAbsolutePath());
+				file.delete();
+			}
+		}
+	}
 
     public static void main(String[] args){
         String filepath = "E:/Java/Blog/";
