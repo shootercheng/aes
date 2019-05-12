@@ -55,6 +55,21 @@ public class FileUtil {
         writer.flush();
         writer.close();
     }
+	
+    /**
+     * 写入文件时指定编码
+     * @param filepath
+     * @param content
+     * @param append
+     * @param encode
+     * @throws Exception
+     */
+    public static void writeBuffToFile(String filepath, String content, boolean append, String encode) throws Exception{
+    	BufferedWriter bufferedWriter = new BufferedWriter( new OutputStreamWriter(
+    			new FileOutputStream(filepath, append), encode));
+    	bufferedWriter.write(content);
+    	bufferedWriter.close();
+    }	
 
     /**
      * byte[] 数组写入文件
