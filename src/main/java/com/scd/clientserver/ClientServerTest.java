@@ -46,7 +46,7 @@ public class ClientServerTest {
 		clientInfo.setPicData(aesImg(imgPath, aesKey));
 		clientInfo.setFileType(aesStr("JPG", aesKey));
 		// 用户信息 AES 加密
-		String input = "name:chengdu";
+		String input = "name:s成都";
 		clientInfo.setUserInfo(aesStr(input, aesKey));
 		// 获取客户端公钥,Base64编码之后发给服务器
 		clientInfo.setClientPub(getClientPub());
