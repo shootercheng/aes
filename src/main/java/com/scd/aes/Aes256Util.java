@@ -21,7 +21,7 @@ public class Aes256Util {
 
     private static final String ALGORITHM_PKCS5Padding = "AES/ECB/PKCS5Padding";
 
-    public static byte[] Aes256Encode(String str, String key){
+    public static byte[] aes256Encode(String str, String key){
         initialize();
         byte[] result = null;
         try{
@@ -35,7 +35,7 @@ public class Aes256Util {
         return result;
     }
 
-    public static String Aes256Decode(byte[] bytes, String key){
+    public static String aes256Decode(byte[] bytes, String key){
         initialize();
         String result = null;
         try{
@@ -87,9 +87,9 @@ public class Aes256Util {
         System.out.println(encrptyArr);
         String originStr = aes256dcrptyDefault(encrptyArr, key);
         System.out.println(originStr);
-        byte[] pkcs7Attr = Aes256Encode("成都",key);
+        byte[] pkcs7Attr = aes256Encode("成都",key);
         System.out.println(pkcs7Attr);
-        String orginstr7 = Aes256Decode(pkcs7Attr, key);
+        String orginstr7 = aes256Decode(pkcs7Attr, key);
         System.out.println(orginstr7);
     }
 }

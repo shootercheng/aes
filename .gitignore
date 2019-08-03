@@ -2,4 +2,8 @@
 out
 sourcefile
 test
+*.iws
+*.iml
+*.ipr
 
+target/
