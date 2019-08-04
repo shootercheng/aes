@@ -24,33 +24,33 @@ public class KeyUtil {
 
 	public static String genRandomKey(int keyLength) {
 		StringBuilder key = new StringBuilder();
-        String strKey = null;
-        int indexTwoDim = 0;
+        String strKey;
+        int index;
 		for (int i = 0; i < keyLength; i++) {
 			// 产生随机二位数组索引 0-3
-			int index = SecureRandomHolder.random.nextInt(4);
+            index = SecureRandomHolder.random.nextInt(4);
 			switch (index){
 				case 0:
 				    // 第一个二位数组索引
-                    indexTwoDim = SecureRandomHolder.random.nextInt(ENCRYPT_ELEMENTS[0].length);
-                    strKey = ENCRYPT_ELEMENTS[0][indexTwoDim];
+                    index = SecureRandomHolder.random.nextInt(ENCRYPT_ELEMENTS[0].length);
+                    strKey = ENCRYPT_ELEMENTS[0][index];
                     key.append(strKey);
 					break;
 				case 1:
 				    // 第二个二位数组索引
-                    indexTwoDim = SecureRandomHolder.random.nextInt(ENCRYPT_ELEMENTS[1].length);
-					strKey = ENCRYPT_ELEMENTS[1][indexTwoDim];
+                    index = SecureRandomHolder.random.nextInt(ENCRYPT_ELEMENTS[1].length);
+					strKey = ENCRYPT_ELEMENTS[1][index];
 					key.append(strKey);
 					break;
 				case 2:
 					// 第三个二位数组索引
-                    indexTwoDim = SecureRandomHolder.random.nextInt(ENCRYPT_ELEMENTS[2].length);
-					strKey = ENCRYPT_ELEMENTS[2][indexTwoDim];
+                    index = SecureRandomHolder.random.nextInt(ENCRYPT_ELEMENTS[2].length);
+					strKey = ENCRYPT_ELEMENTS[2][index];
 					key.append(strKey);
 					break;
                 case 3:
-                    indexTwoDim = SecureRandomHolder.random.nextInt(ENCRYPT_ELEMENTS[3].length);
-                    strKey = ENCRYPT_ELEMENTS[3][indexTwoDim];
+                    index = SecureRandomHolder.random.nextInt(ENCRYPT_ELEMENTS[3].length);
+                    strKey = ENCRYPT_ELEMENTS[3][index];
                     key.append(strKey);
 				default:
 					break;

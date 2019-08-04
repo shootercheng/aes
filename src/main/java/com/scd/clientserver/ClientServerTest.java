@@ -13,7 +13,7 @@ import com.scd.vo.ClientInfo;
 
 /**
  * 客户端、服务端一次信息传输过程
- * 客户端已知服务端公钥，或者像
+ * 客户端已知服务端公钥，或者向
  * 服务端请求公钥
  * @author chengdu
  *
