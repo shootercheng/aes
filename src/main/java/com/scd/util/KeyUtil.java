@@ -23,7 +23,7 @@ public class KeyUtil {
     }
 
     public static String genRandomKey(int keyLength) {
-        StringBuilder key = new StringBuilder();
+        StringBuilder key = new StringBuilder(keyLength);
         char strKey;
         int index;
         for (int i = 0; i < keyLength; i++) {
