@@ -1,5 +1,6 @@
 package com.scd.aes;
 
+import com.scd.util.UnicodeUtil;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import javax.crypto.Cipher;
@@ -91,5 +92,12 @@ public class Aes256Util {
         System.out.println(pkcs7Attr);
         String orginstr7 = aes256Decode(pkcs7Attr, key);
         System.out.println(orginstr7);
+        // 6 * 5 + 2
+        String testCnKey = "嗨成都中文";
+        String unicodeKey = UnicodeUtil.gbEncoding(testCnKey) + "@#";
+        byte[] pkcs7CnArr = aes256Encode("成都", unicodeKey);
+        System.out.println(pkcs7CnArr);
+        String decodeCn = aes256Decode(pkcs7CnArr, unicodeKey);
+        System.out.println(decodeCn);
     }
 }
