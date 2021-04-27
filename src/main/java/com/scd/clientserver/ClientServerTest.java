@@ -9,7 +9,7 @@ import com.scd.util.Base64Util;
 import com.scd.util.FileUtil;
 import com.scd.util.KeyUtil;
 import com.scd.util.RsaUtil;
-import com.scd.vo.ClientInfo;
+import com.scd.model.ClientInfo;
 
 /**
  * 客户端、服务端一次信息传输过程

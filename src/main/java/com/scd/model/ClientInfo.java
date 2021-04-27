@@ -1,4 +1,4 @@
-package com.scd.vo;
+package com.scd.model;
 
 public class ClientInfo {
 	

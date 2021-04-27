@@ -1,10 +1,19 @@
 package com.scd.aes;
 
+import com.scd.exception.DecryptException;
+import com.scd.exception.EncryptException;
 import com.scd.util.UnicodeUtil;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.Security;
 
 /**
@@ -24,39 +33,34 @@ public class Aes256Util {
 
     public static byte[] aes256Encode(String str, String key){
         initialize();
-        byte[] result = null;
         try{
             Cipher cipher = Cipher.getInstance(ALGORITHM_PKCS7Padding, "BC");
-            SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(UTF8ENCODE), "AES"); //生成加密解密需要的Key
+            SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(UTF8ENCODE), "AES");
             cipher.init(Cipher.ENCRYPT_MODE, keySpec);
-            result = cipher.doFinal(str.getBytes(UTF8ENCODE));
-        }catch(Exception e){
-            e.printStackTrace();
+            return cipher.doFinal(str.getBytes(UTF8ENCODE));
+        } catch (NoSuchAlgorithmException | BadPaddingException | InvalidKeyException | NoSuchPaddingException | NoSuchProviderException | IllegalBlockSizeException | UnsupportedEncodingException e) {
+            throw new EncryptException("aes encrypt error ", e);
         }
-        return result;
     }
 
     public static String aes256Decode(byte[] bytes, String key){
         initialize();
-        String result = null;
         try{
             Cipher cipher = Cipher.getInstance(ALGORITHM_PKCS7Padding, "BC");
-            SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(UTF8ENCODE), "AES"); //生成加密解密需要的Key
+            SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(UTF8ENCODE), "AES");
             cipher.init(Cipher.DECRYPT_MODE, keySpec);
             byte[] decoded = cipher.doFinal(bytes);
-            result = new String(decoded, UTF8ENCODE);
-        }catch(Exception e){
-            e.printStackTrace();
+            return new String(decoded, UTF8ENCODE);
+        } catch (NoSuchAlgorithmException | BadPaddingException | InvalidKeyException | NoSuchPaddingException | NoSuchProviderException | IllegalBlockSizeException | UnsupportedEncodingException e) {
+            throw new DecryptException("aes decrypt error ", e);
         }
-        return result;
     }
 
     public static byte[] aes256EncrptyDefault(String str, String key) throws Exception{
         Cipher cipher = Cipher.getInstance(ALGORITHM_PKCS5Padding);
-        SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(UTF8ENCODE), "AES"); //生成加密解密需要的Key
+        SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(UTF8ENCODE), "AES");
         cipher.init(Cipher.ENCRYPT_MODE, keySpec);
-        byte[] result = cipher.doFinal(str.getBytes(UTF8ENCODE));
-        return result;
+        return cipher.doFinal(str.getBytes(UTF8ENCODE));
     }
 
     public static String aes256dcrptyDefault(byte[] bytes, String key) throws Exception{
@@ -68,7 +72,9 @@ public class Aes256Util {
 
 
     public static void initialize(){
-        if (initialized) return;
+        if (initialized) {
+            return;
+        }
         Security.addProvider(new BouncyCastleProvider());
         initialized = true;
     }
