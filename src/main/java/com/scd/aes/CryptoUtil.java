@@ -9,6 +9,8 @@ import com.scd.util.Base64Util;
 import org.apache.commons.crypto.cipher.CryptoCipher;
 import org.apache.commons.crypto.random.CryptoRandom;
 import org.apache.commons.crypto.random.CryptoRandomFactory;
+import org.apache.commons.crypto.stream.CryptoInputStream;
+import org.apache.commons.crypto.stream.CryptoOutputStream;
 import org.apache.commons.crypto.utils.Utils;
 
 import javax.crypto.BadPaddingException;
@@ -17,14 +19,19 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.ShortBufferException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.spec.AlgorithmParameterSpec;
 import java.util.Properties;
 
 /**
@@ -112,7 +119,7 @@ public class CryptoUtil {
     }
 
     public static String decrypt(SecretKeySpec key, IvParameterSpec iv, String encryptStr) {
-        Properties properties = new Properties();
+        Properties properties = createProperties();
         //Creates a CryptoCipher instance with the transformation and properties.
         try (CryptoCipher decipher = Utils.getCipherInstance(TRANSFORM, properties)) {
             decipher.init(Cipher.DECRYPT_MODE, key, iv);
@@ -129,6 +136,83 @@ public class CryptoUtil {
         }
     }
 
+    public static byte[] encrypt(SecretKeySpec key, IvParameterSpec iv, byte[] bytes) {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (CryptoOutputStream cos = new CryptoOutputStream(TRANSFORM, createProperties(), outputStream, key, iv)) {
+            cos.write(bytes);
+            return outputStream.toByteArray();
+        } catch (IOException e) {
+            throw new EncryptException("encrypt byte error ", e);
+        }
+    }
+
+    public static byte[] encrypt(String key, String iv, byte[] bytes) {
+        SecretKeySpec secretKeySpec = createSecretKeySpec(key);
+        IvParameterSpec ivParameterSpec = createIvParameterSpec(iv);
+        return encrypt(secretKeySpec, ivParameterSpec, bytes);
+    }
+
+    public static byte[] decrypt(SecretKeySpec key, IvParameterSpec iv, byte[] encryptByte) {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(encryptByte);
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        try (CryptoInputStream cis = new CryptoInputStream(TRANSFORM, createProperties(), inputStream, key, iv)) {
+            byte[] buffer = new byte[Constant.BUFFER_SIZE_4096];
+            int readLen = - 1;
+            while ((readLen = cis.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, readLen);
+            }
+            return outputStream.toByteArray();
+        } catch (IOException e) {
+            throw new DecryptException("decrypt file error ", e);
+        }
+    }
+
+    public static byte[] decrypt(String key, String iv, byte[] encryptByte) {
+        SecretKeySpec secretKeySpec = createSecretKeySpec(key);
+        IvParameterSpec ivParameterSpec = createIvParameterSpec(iv);
+        return decrypt(secretKeySpec, ivParameterSpec, encryptByte);
+    }
+
+    public static void encrypt(SecretKeySpec key, IvParameterSpec iv, String filePath, String encryptFilPath) {
+        try (InputStream inputStream = new FileInputStream(filePath);
+             OutputStream outputStream = new FileOutputStream(encryptFilPath);
+             CryptoOutputStream cos = new CryptoOutputStream(TRANSFORM, createProperties(), outputStream, key, iv)) {
+            byte[] buffer = new byte[Constant.BUFFER_SIZE_4096];
+            int readLen = -1;
+            while ((readLen = inputStream.read(buffer)) != -1) {
+                cos.write(buffer, 0, readLen);
+            }
+        } catch (IOException e) {
+            throw new EncryptException("encrypt file error ", e);
+        }
+    }
+
+    public static void encrypt(CryptoKey cryptoKey, String filePath, String encryptFilPath) {
+        SecretKeySpec secretKeySpec = createSecretKeySpec(cryptoKey.getSecretKeySpec());
+        IvParameterSpec ivParameterSpec = createIvParameterSpec(cryptoKey.getIvParameterSpec());
+        encrypt(secretKeySpec, ivParameterSpec, filePath, encryptFilPath);
+    }
+
+    public static void decrypt(SecretKeySpec key, IvParameterSpec iv, String encryptFilePath, String decryptFilePath) {
+        try (InputStream inputStream = new FileInputStream(encryptFilePath);
+            OutputStream outputStream = new FileOutputStream(decryptFilePath);
+            CryptoInputStream cis = new CryptoInputStream(TRANSFORM, createProperties(), inputStream, key, iv)) {
+            byte[] buffer = new byte[Constant.BUFFER_SIZE_4096];
+            int readLen = -1;
+            while ((readLen = cis.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, readLen);
+            }
+        } catch (IOException e) {
+            throw new DecryptException("decrypt file error ", e);
+        }
+    }
+
+    public static void decrypt(CryptoKey cryptoKey, String encryptFilePath, String decryptFilePath) {
+        SecretKeySpec secretKeySpec = createSecretKeySpec(cryptoKey.getSecretKeySpec());
+        IvParameterSpec ivParameterSpec = createIvParameterSpec(cryptoKey.getIvParameterSpec());
+        decrypt(secretKeySpec, ivParameterSpec, encryptFilePath, decryptFilePath);
+    }
+
     public static String encrypt(String key, String iv, String text) {
         SecretKeySpec secretKeySpec = createSecretKeySpec(key);
         IvParameterSpec ivParameterSpec = createIvParameterSpec(iv);
@@ -141,12 +225,12 @@ public class CryptoUtil {
         return decrypt(secretKeySpec, ivParameterSpec, encryptStr);
     }
 
-    private static IvParameterSpec createIvParameterSpec(String iv) {
+    public static IvParameterSpec createIvParameterSpec(String iv) {
         byte[] byteIv = Base64Util.decryptBASE64(iv);
         return new IvParameterSpec(byteIv);
     }
 
-    private static SecretKeySpec createSecretKeySpec(String key) {
+    public static SecretKeySpec createSecretKeySpec(String key) {
         byte[] byteKey = Base64Util.decryptBASE64(key);
         return new SecretKeySpec(byteKey, ENCRYPT_TYPE);
     }

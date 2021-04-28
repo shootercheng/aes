@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -56,4 +57,41 @@ public class CryptoTest {
         Assert.assertEquals(text, decrypt);
     }
 
+    @Test
+    public void testEncryptFile() {
+        String filePath = "file/PDF_Software.pdf";
+        String encryptPath = "file/Encrypt_PDF_Software.pdf";
+        String decryptPath = "file/Decrypt_PDF_Software.pdf";
+        CryptoKey cryptoKey = CryptoUtil.generateRandomKey();
+        CryptoUtil.encrypt(cryptoKey, filePath, encryptPath);
+        CryptoUtil.decrypt(cryptoKey, encryptPath, decryptPath);
+    }
+
+    @Test
+    public void testEncryptImg() {
+        String filePath = "file/java-exception.jpg";
+        String encryptPath = "file/Encrypt_java-exception.jpg";
+        String decryptPath = "file/Decrypt_java-exception.jpg";
+        CryptoKey cryptoKey = CryptoUtil.generateRandomKey();
+        CryptoUtil.encrypt(cryptoKey, filePath, encryptPath);
+        CryptoUtil.decrypt(cryptoKey, encryptPath, decryptPath);
+    }
+
+    /**
+     * size 1.39 GB (1,501,102,080 字节)
+     * time 1m 54s 762 ms
+     */
+    @Test
+    public void testEncryptLargeFile() {
+        // size
+        String filePath = "E:\\ISO\\Linux\\ubuntu-17-10.iso";
+        File file = new File(filePath);
+        String parentPath = file.getParent();
+        String fileName = file.getName();
+        String encryptPath = parentPath + File.separator + "Encrypt_" + fileName;
+        String decryptPath = parentPath + File.separator + "Decrypt_" + fileName;
+        CryptoKey cryptoKey = CryptoUtil.generateRandomKey();
+        CryptoUtil.encrypt(cryptoKey, filePath, encryptPath);
+        CryptoUtil.decrypt(cryptoKey, encryptPath, decryptPath);
+    }
 }
