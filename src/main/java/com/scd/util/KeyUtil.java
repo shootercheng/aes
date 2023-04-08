@@ -24,39 +24,17 @@ public class KeyUtil {
 
     public static String genRandomKey(int keyLength) {
         StringBuilder key = new StringBuilder(keyLength);
-        char strKey;
-        int index;
+        int lene = ENCRYPT_ELEMENTS.length;
         for (int i = 0; i < keyLength; i++) {
-            // 产生随机二位数组索引 0-3
-            index = SecureRandomHolder.random.nextInt(4);
-            switch (index) {
-                case 0:
-                    // 第一个二位数组索引
-                    index = SecureRandomHolder.random.nextInt(ENCRYPT_ELEMENTS[0].length);
-                    strKey = ENCRYPT_ELEMENTS[0][index];
-                    key.append(strKey);
-                    break;
-                case 1:
-                    // 第二个二位数组索引
-                    index = SecureRandomHolder.random.nextInt(ENCRYPT_ELEMENTS[1].length);
-                    strKey = ENCRYPT_ELEMENTS[1][index];
-                    key.append(strKey);
-                    break;
-                case 2:
-                    // 第三个二位数组索引
-                    index = SecureRandomHolder.random.nextInt(ENCRYPT_ELEMENTS[2].length);
-                    strKey = ENCRYPT_ELEMENTS[2][index];
-                    key.append(strKey);
-                    break;
-                case 3:
-                    index = SecureRandomHolder.random.nextInt(ENCRYPT_ELEMENTS[3].length);
-                    strKey = ENCRYPT_ELEMENTS[3][index];
-                    key.append(strKey);
-                default:
-                    break;
-            }
+            int arrIndex = SecureRandomHolder.random.nextInt(lene);
+            key.append(generateOneElement(arrIndex));
         }
         return key.toString();
+    }
+
+    private static char generateOneElement(int arrIndex) {
+        int arrLen = ENCRYPT_ELEMENTS[arrIndex].length;
+        return ENCRYPT_ELEMENTS[arrIndex][SecureRandomHolder.random.nextInt(arrLen)];
     }
 
     public static String genUidKey(int keyLength) {
